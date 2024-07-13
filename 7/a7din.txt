@@ -1,0 +1,34 @@
+#------------------------------------
+# 	CS 218
+#   Assignment #7
+#   Debugger Script File
+#------------------------------------
+echo \n\n
+set pagination off
+set logging file hw7_out.txt
+set logging overwrite
+set logging enable on
+#------------ Check populateBuffer ------------
+b bufferDebugCheck
+run
+echo Checking buffer contents after read \n
+print (char[150])charBuffer
+info break
+delete bufferDebugCheck
+#------------ Check reverse ------------
+b reverseCharDebugCheck
+continue
+echo \n Checking buffer contents after reverse \n
+print (char[150])charBuffer
+delete reverseCharDebugCheck
+#------------ Check Caesar Cypher ------------
+b applyCaesarDebugCheck
+continue
+echo \n Checking buffer contents after caesar cypher \n
+print (char[150])charBuffer
+delete applyCaesarDebugCheck
+echo \n
+continue 
+set logging enabled off
+set confirm off
+quit

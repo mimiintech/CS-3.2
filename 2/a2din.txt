@@ -1,0 +1,41 @@
+#------------------------------------
+# CS 218
+#   Assignment #2
+#   Debugger Script File
+#------------------------------------
+echo \n\n
+b last
+set verbose off
+run
+set pagination off
+set logging file hw2_out.txt
+set logging overwrite
+set logging enable on
+set prompt
+echo \n
+printf "byteVar1 = %i\n", (unsigned char)byteVar1
+printf "byteVar2 = %i\n", (unsigned char)byteVar2
+printf "wordVar1 = %i\n", (signed short)wordVar1
+printf "wordVar2 = %i\n", (signed short)wordVar2
+printf "doubleVar1 = %i\n", (int)doubleVar1
+printf "doubleVar2 = %i\n", (int)doubleVar2
+printf "quadVar1 = %i\n", (signed long long)quadVar1
+printf "quadVar2 = %i\n", (signed long long)quadVar2
+echo ------------- Computations -------------
+echo \n
+printf "byteDif = %i\n", (unsigned char)byteDif
+printf "wordQuot = %i\n", (signed short)wordQuot
+printf "wordRemainder = %i\n", (signed short)wordRemainder
+printf "wordProd = %i\n", (signed short)wordProd
+printf "doubleProd = %i\n", (int)doubleProd
+printf "byteSum = %i\n", (unsigned char)byteSum
+printf "wordDif = %i\n", (signed short)wordDif
+printf "doubleSum = %i\n", (int)doubleSum
+printf "quadQuot = %i\n", (signed long long)quadQuot
+printf "quadRemainder = %i\n", (signed long long)quadRemainder
+printf "quadSum = %i\n", (signed long long)quadSum
+printf "quadProd = %i\n", (signed long long)quadProd
+printf "doubleResult = %i\n", (int)doubleResult
+set logging enabled off
+set confirm off
+quit

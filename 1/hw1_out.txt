@@ -1,0 +1,8 @@
+
+byteVar1 = 		0x402000:	5
+byteVar2 = 		0x402001:	7
+byteResult = 		0x402002:	12
+wordVar1 = 		0x402005:	1300
+wordVar2 = 		0x402007:	250
+wordResult = 		0x402009:	0
+wordRemainder = 	0x40200b:	0

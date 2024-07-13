@@ -1,0 +1,123 @@
+     1                                 %line 1+1 hw2.asm
+     2                                 
+     3                                 
+     4                                 
+     5                                 
+     6                                 
+     7                                 
+     8                                 
+     9                                 
+    10                                 
+    11                                 [section .data]
+    12                                 
+    13                                 
+    14                                 
+    15 00000000 04                     byteVar1 db 4
+    16 00000001 09                     byteVar2 db 9
+    17 00000002 00                     byteSum db 0
+    18 00000003 00                     byteDif db 0
+    19 00000004 0000                   wordProd dw 0
+    20 00000006 6004                   wordVar1 dw 1120
+    21 00000008 9A01                   wordVar2 dw 410
+    22 0000000A 0000                   wordQuot dw 0
+    23 0000000C 0000                   wordRemainder dw 0
+    24 0000000E 0000                   wordDif dw 0
+    25 00000010 00000000               doubleSum dd 0
+    26 00000014 D8720000               doubleVar1 dd 29400
+    27 00000018 76520000               doubleVar2 dd 21110
+    28 0000001C 00000000               doubleProd dd 0
+    29 00000020 00000000               doubleResult dd 0
+    30 00000024 F6C5000000000000       quadVar1 dq 50678
+    31 0000002C 7B00000000000000       quadVar2 dq 123
+    32 00000034 0000000000000000       quadSum dq 0
+    33 0000003C 0000000000000000       quadProd dq 0
+    34 00000044 0000000000000000       quadQuot dq 0
+    35 0000004C 0000000000000000       quadRemainder dq 0
+    36                                 
+    37                                 
+    38                                 EXIT_SUCCESS equ 0
+    39                                 SYS_exit equ 60
+    40                                 
+    41                                 [section .text]
+    42                                 
+    43                                 
+    44                                 [global _start]
+    45                                 _start:
+    46                                 
+    47                                 
+    48 00000000 8A0425[00000000]       mov al, byte[byteVar2]
+    49 00000007 2A0425[00000000]       sub al, byte[byteVar1]
+    50 0000000E 880425[00000000]       mov byte[byteDif], al
+    51                                 
+    52                                 
+    53 00000015 668B0425[00000000]     mov ax, word[wordVar1]
+    54 0000001D 6699                   cwd
+    55 0000001F 66F73425[00000000]     div word[wordVar2]
+    56 00000027 66890425[00000000]     mov word[wordQuot], ax
+    57 0000002F 66891425[00000000]     mov word[wordRemainder], dx
+    58                                 
+    59                                 
+    60 00000037 8A0425[00000000]       mov al, byte[byteVar1]
+    61 0000003E F62425[00000000]       mul byte[byteVar2]
+    62 00000045 66890425[00000000]     mov word[wordProd], ax
+    63                                 
+    64                                 
+    65 0000004D 668B0425[00000000]     mov ax, word[wordVar1]
+    66 00000055 66F72425[00000000]     mul word[wordVar2]
+    67 0000005D 66890425[00000000]     mov word[doubleProd], ax
+    68 00000065 66891425[02000000]     mov word[doubleProd + 2], dx
+    69                                 
+    70                                 
+    71                                 
+    72                                 
+    73                                 
+    74 0000006D 8A0425[00000000]       mov al, byte [byteVar1]
+    75 00000074 020425[00000000]       add al, byte [byteVar2]
+    76 0000007B 880425[00000000]       mov byte [byteSum], al
+    77                                 
+    78                                 
+    79 00000082 668B0425[00000000]     mov ax, word [wordVar1]
+    80 0000008A 662B0425[00000000]     sub ax, word [wordVar2]
+    81 00000092 66890425[00000000]     mov word [wordDif], ax
+    82                                 
+    83                                 
+    84 0000009A 8B0425[00000000]       mov eax, dword [doubleVar1]
+    85 000000A1 030425[00000000]       add eax, dword [doubleVar2]
+    86 000000A8 890425[00000000]       mov dword [doubleSum], eax
+    87                                 
+    88                                 
+    89 000000AF 488B0425[00000000]     mov rax, qword [quadVar1]
+    90 000000B7 4899                   cqo
+    91 000000B9 48F73425[00000000]     div qword [quadVar2]
+    92 000000C1 48890425[00000000]     mov qword [quadQuot], rax
+    93 000000C9 48891425[00000000]     mov qword [quadRemainder], rdx
+    94                                 
+    95                                 
+    96 000000D1 488B0425[00000000]     mov rax, qword [quadVar1]
+    97 000000D9 48030425[00000000]     add rax, qword [quadVar2]
+    98 000000E1 48890425[00000000]     mov qword [quadSum], rax
+    99                                 
+   100                                 
+   101 000000E9 8B0425[00000000]       mov eax, dword [doubleVar1]
+   102 000000F0 F72425[00000000]       mul dword [doubleVar2]
+   103 000000F7 890425[00000000]       mov dword [quadProd], eax
+   104 000000FE 891425[04000000]       mov dword [quadProd+4], edx
+   105                                 
+   106                                 
+   107 00000105 668B0425[00000000]     mov ax, word [wordVar1]
+   108 0000010D 66F72425[00000000]     mul word [wordQuot]
+   109 00000115 66890425[00000000]     mov word [doubleResult], ax
+   110                                 
+   111 0000011D 66891425[02000000]     mov word[doubleResult+2], dx
+   112                                 
+   113                                 
+   114 00000125 8B0425[00000000]       mov eax, dword [doubleResult]
+   115 0000012C 030425[00000000]       add eax, dword [doubleVar1]
+   116 00000133 890425[00000000]       mov dword [doubleResult], eax
+   117                                 
+   118                                 
+   119                                 last:
+   120 0000013A B83C000000              mov eax, SYS_exit
+   121 0000013F BF00000000              mov edi, EXIT_SUCCESS
+   122 00000144 0F05                    syscall
+   123                                 

@@ -1,0 +1,23 @@
+#------------------------------------
+# 	CS 218
+#   Assignment #6
+#   Debugger Script File
+#------------------------------------
+echo \n\n
+set pagination off
+set logging file hw6_out.txt
+set logging overwrite
+set logging enable on
+set prompt
+b last
+run
+echo \n
+printf "Sum of A tree = %u\n", (short)sumA
+printf "Sum of B tree = %u\n\n", (short)sumB
+echo Searching for values... [0 = false, 1 = true, -1 = uninitialized]\n
+printf "Was 10 found? %i\n", (char)found10
+printf "Was 11 found? %i\n", (char)found11
+printf "Was 13 found? %i\n", (char)found13
+set logging enabled off
+set confirm off
+quit

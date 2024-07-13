@@ -1,0 +1,31 @@
+#------------------------------------
+# CS 218
+#   Assignment #1
+#   Debugger Script File
+#------------------------------------
+echo \n\n
+b last
+run
+set pagination off
+set logging file hw1_out.txt
+set logging overwrite
+set logging enable on
+set prompt
+echo \n
+echo byteVar1 = \t\t
+x/db &byteVar1
+echo byteVar2 = \t\t
+x/db &byteVar2
+echo byteResult = \t\t
+x/db &byteResult
+echo wordVar1 = \t\t
+x/dh &wordVar1
+echo wordVar2 = \t\t
+x/dh &wordVar2
+echo wordResult = \t\t
+x/dh &wordResult
+echo wordRemainder = \t
+x/dh &wordRemainder
+set loggin enabled off
+set confirm off
+quit

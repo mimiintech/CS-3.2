@@ -1,0 +1,36 @@
+#------------------------------------
+# 	CS 218
+#   Assignment #5
+#   Debugger Script File
+#------------------------------------
+echo \n\n
+set pagination off
+set logging file hw5_out.txt
+set logging overwrite
+set logging enable on
+set prompt
+b last
+commands
+silent
+end
+run
+echo \n
+echo ------------- Lengths -------------
+echo \n
+print/d (short[20])lengthsArray
+echo ------------- Widths -------------
+echo \n
+print/d (short[20])widthsArray
+echo ------------- Perimeters -------------
+echo \n
+print/d (int[20])perimValues
+echo ------------- Areas -------------
+echo \n
+print/d (int[20])areaValues
+echo ------------- Averages -------------
+echo \n
+printf "avgPerim = %i\n", (short)avgPerim
+printf "avgArea = %i\n", (short)avgArea
+set logging enabled off
+set confirm off
+quit

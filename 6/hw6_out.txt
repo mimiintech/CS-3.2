@@ -1,0 +1,12 @@
+Breakpoint 2 at 0x401084: file hw6.asm, line 101.
+
+Breakpoint 1, last () at hw6.asm:101
+/home/michelle/cs218/6/hw6.asm:101:2593:beg:0x401084
+
+Sum of A tree = 73
+Sum of B tree = 49
+
+Searching for values... [0 = false, 1 = true, -1 = uninitialized]
+Was 10 found? 1
+Was 11 found? 1
+Was 13 found? 0

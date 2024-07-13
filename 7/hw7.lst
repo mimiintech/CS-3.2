@@ -1,0 +1,364 @@
+     1                                 %line 1+1 hw7.asm
+     2                                 
+     3                                 
+     4                                 
+     5                                 
+     6                                 
+     7                                 
+     8                                 
+     9                                 [section .bss]
+    10                                 BUFFER_MAX equ 150
+    11                                 C_OFFSET equ 6
+    12                                 
+    13 00000000 <gap>                  charBuffer resb BUFFER_MAX
+    14 00000096 <gap>                  outfileDescriptor resq 1
+    15                                 
+    16                                 [section .data]
+    17                                 
+    18                                 
+    19                                 LF equ 10
+    20                                 NULL equ 0
+    21 00000000 52656164696E672066-    welcomeMessage db "Reading from file...", LF, NULL
+    22 00000000 726F6D2066696C652E-
+    23 00000000 2E2E0A00           
+    24 00000016 446F6E652120536565-    doneMessage db "Done! See cypher_text.txt", LF, NULL
+    25 00000016 206379706865725F74-
+    26 00000016 6578742E7478740A00 
+    27 00000031 436F756C64206E6F74-    errorMessage db "Could not open output file", LF, NULL
+    28 00000031 206F70656E206F7574-
+    29 00000031 7075742066696C650A-
+    30 00000031 00                 
+    31 0000004D 436F756C64206E6F74-    writeError db "Could not write to file!", LF, NULL
+    32 0000004D 20777269746520746F-
+    33 0000004D 2066696C65210A00   
+    34 00000067 6379706865725F7465-    outfileName db "cypher_text.txt", NULL
+    35 00000067 78742E74787400     
+    36 00000077 0A00                   lineFeed db LF, NULL
+    37                                 welcomeLength equ 21
+    38                                 doneLength equ 26
+    39                                 errorLength equ 27
+    40                                 writeErrLength equ 25
+    41                                 
+    42                                 
+    43                                 EXIT_SUCCESS equ 0
+    44                                 EXIT_FAIL equ 1
+    45                                 TRUE equ 1
+    46                                 FALSE equ 0
+    47                                 
+    48                                 
+    49                                 STDIN equ 0
+    50                                 STDOUT equ 1
+    51                                 STDERR equ 2
+    52                                 
+    53                                 
+    54                                 SYS_read equ 0
+    55                                 SYS_write equ 1
+    56                                 SYS_open equ 2
+    57                                 SYS_close equ 3
+    58                                 SYS_chmod equ 15
+    59                                 SYS_exit equ 60
+    60                                 SYS_creat equ 85
+    61                                 
+    62                                 
+    63                                 O_CREATE equ 0x40
+    64                                 O_APPEND equ 1024
+    65                                 O_RDONLY equ 000000
+    66                                 O_WRONLY equ 000001
+    67                                 O_RDWR equ 000002
+    68                                 O_RDWREX equ 777
+    69                                 
+    70                                 [section .text]
+    71                                 [global _start]
+    72                                 [global translateBlock]
+    73                                 [global populateBuffer]
+    74                                 [global applyCaesar]
+    75                                 [global writeBuffer]
+    76                                 [global translateFile]
+    77                                 [global printDoneMessage]
+    78                                 [global printWelcomeMessage]
+    79                                 [global openOutputFile]
+    80                                 [global reverseChars]
+    81                                 _start:
+    82                                 
+    83 00000000 E8B6000000             call printWelcomeMessage
+    84 00000005 E80C000000             call translateFile
+    85 0000000A E829010000             call printDoneMessage
+    86                                 
+    87                                 
+    88                                 last:
+    89 0000000F B83C000000              mov eax, SYS_exit
+    90 00000014 BF00000000              mov edi, EXIT_SUCCESS
+    91 00000019 0F05                    syscall
+    92                                 
+    93                                 
+    94                                 
+    95                                 
+    96                                 translateFile:
+    97 0000001B 55                      push rbp
+    98 0000001C 4889E5                  mov rbp, rsp
+    99                                 
+   100                                 
+   101 0000001F 48C7C7[00000000]        mov rdi, outfileName
+   102 00000026 E8AF000000              call openOutputFile
+   103 0000002B 48890425[00000000]      mov qword[outfileDescriptor], rax
+   104                                 
+   105                                  mainLoop:
+   106                                 
+   107 00000033 48C7C700000000          mov rdi, STDIN
+   108 0000003A 48C7C6[00000000]        mov rsi, charBuffer
+   109 00000041 E8F3000000              call populateBuffer
+   110                                 
+   111                                  bufferDebugCheck:
+   112                                 
+   113                                 
+   114 00000046 483D96000000            cmp rax, BUFFER_MAX
+   115 0000004C 7C08                    jl lastCall
+   116                                 
+   117                                 
+   118 0000004E 4889C7                  mov rdi, rax
+   119 00000051 E81C000000              call translateBlock
+   120                                 
+   121 00000056 EBD9                    jmp mainLoop
+   122                                 
+   123                                  lastCall:
+   124 00000058 4883F800                cmp rax, 0
+   125 0000005C 7406                    je doneTranslation
+   126                                 
+   127                                 
+   128 0000005E 4889C7                  mov rdi, rax
+   129 00000061 E80C000000              call translateBlock
+   130                                  doneTranslation:
+   131                                 
+   132                                 
+   133 00000066 48C7C003000000          mov rax, SYS_close
+   134 0000006D 488B3C25[00000000]      mov rdi, qword[outfileDescriptor]
+   135                                 
+   136 00000075 5D                      pop rbp
+   137 00000076 C3                      ret
+   138                                 
+   139                                 
+   140                                 
+   141                                 
+   142                                 
+   143                                 translateBlock:
+   144 00000077 55                      push rbp
+   145 00000078 4154                    push r12
+   146 0000007A 4889E5                  mov rbp, rsp
+   147                                 
+   148 0000007D 4989FC                  mov r12, rdi
+   149                                 
+   150                                 
+   151 00000080 4C89E7                  mov rdi, r12
+   152 00000083 48C7C6[00000000]        mov rsi, charBuffer
+   153 0000008A E829010000              call reverseChars
+   154                                 
+   155                                  reverseCharDebugCheck:
+   156                                 
+   157                                 
+   158 0000008F 4C89E7                  mov rdi, r12
+   159 00000092 48C7C6[00000000]        mov rsi, charBuffer
+   160 00000099 48C7C206000000          mov rdx, C_OFFSET
+   161 000000A0 E8DC000000              call applyCaesar
+   162                                 
+   163                                  applyCaesarDebugCheck:
+   164                                 
+   165                                 
+   166 000000A5 488B3C25[00000000]      mov rdi, qword[outfileDescriptor]
+   167 000000AD 48C7C6[00000000]        mov rsi, charBuffer
+   168 000000B4 4C89E2                  mov rdx, r12
+   169 000000B7 E893000000              call writeBuffer
+   170                                 
+   171 000000BC 415C                    pop r12
+   172 000000BE 5D                      pop rbp
+   173 000000BF C3                      ret
+   174                                 
+   175                                 
+   176                                 
+   177                                 printWelcomeMessage:
+   178 000000C0 48C7C001000000          mov rax, SYS_write
+   179 000000C7 48C7C701000000          mov rdi, STDOUT
+   180 000000CE 48C7C6[00000000]        mov rsi, welcomeMessage
+   181 000000D5 48C7C215000000          mov rdx, welcomeLength
+   182 000000DC 0F05                    syscall
+   183 000000DE C3                      ret
+   184                                 
+   185                                 
+   186                                 
+   187                                 
+   188                                 openOutputFile:
+   189 000000DF 48C7C055000000          mov rax, SYS_creat
+   190 000000E6 48C7C6FF010000          mov rsi, O_RDWREX
+   191 000000ED 0F05                    syscall
+   192                                 
+   193                                 
+   194 000000EF 4883F800                cmp rax, 0
+   195 000000F3 7D45                    jge noErrorCreating
+   196                                 
+   197 000000F5 48C7C002000000          mov rax, SYS_open
+   198 000000FC 48C7C7[00000000]        mov rdi, outfileName
+   199 00000103 48C7C640000000          mov rsi, O_CREATE
+   200 0000010A 0F05                    syscall
+   201                                 
+   202                                 
+   203 0000010C 4883F800                cmp rax, 0
+   204 00000110 7D28                    jge noErrorCreating
+   205                                 
+   206 00000112 48C7C001000000          mov rax, SYS_write
+   207 00000119 48C7C701000000          mov rdi, STDOUT
+   208 00000120 48C7C6[00000000]        mov rsi, errorMessage
+   209 00000127 48C7C21B000000          mov rdx, errorLength
+   210 0000012E 0F05                    syscall
+   211                                 
+   212 00000130 B83C000000              mov eax, SYS_exit
+   213 00000135 BF01000000              mov edi, EXIT_FAIL
+   214 0000013A 0F05                    syscall
+   215                                 
+   216                                  noErrorCreating:
+   217 0000013C C3                      ret
+   218                                 
+   219                                 
+   220                                 
+   221                                 
+   222                                 
+   223                                 printDoneMessage:
+   224                                 
+   225                                 
+   226                                 
+   227                                 
+   228                                 
+   229                                 
+   230 0000013D C3                      ret
+   231                                 
+   232                                 
+   233                                 
+   234                                 
+   235                                 
+   236                                 populateBuffer:
+   237                                 
+   238                                 
+   239                                 
+   240                                 
+   241                                 
+   242                                 
+   243                                 
+   244                                 
+   245 0000013E 55                      push rbp
+   246 0000013F 4889E5                  mov rbp, rsp
+   247 00000142 48C7C000000000          mov rax, SYS_read
+   248 00000149 48C7C296000000          mov rdx, BUFFER_MAX
+   249 00000150 0F05                    syscall
+   250 00000152 5D                      pop rbp
+   251 00000153 C3                      ret
+   252                                 
+   253                                 
+   254                                 
+   255                                 
+   256                                 
+   257                                 writeBuffer:
+   258                                 
+   259                                 
+   260                                 
+   261                                 
+   262                                 
+   263                                 
+   264 00000154 55                      push rbp
+   265 00000155 4889E5                  mov rbp, rsp
+   266                                 
+   267                                 
+   268 00000158 48C7C001000000          mov rax, SYS_write
+   269 0000015F 0F05                    syscall
+   270                                 
+   271                                 
+   272 00000161 4883F800                cmp rax, 0
+   273 00000165 7C04                    jl errorOnWrite
+   274 00000167 4883F800                cmp rax, 0
+   275 0000016B 7D15                    jge endWriteBuffer
+   276                                 
+   277                                  errorOnWrite:
+   278                                 
+   279 0000016D 48C7C701000000          mov rdi, STDOUT
+   280 00000174 48C7C6[00000000]        mov rsi, writeError
+   281 0000017B 48C7C219000000          mov rdx, writeErrLength
+   282 00000182 0F05                    syscall
+   283                                 
+   284                                  endWriteBuffer:
+   285 00000184 5D                      pop rbp
+   286 00000185 C3                      ret
+   287                                 
+   288                                 
+   289                                 
+   290                                 
+   291                                 
+   292                                 
+   293                                 applyCaesar:
+   294                                 
+   295                                 
+   296                                 
+   297                                 
+   298                                 
+   299                                 
+   300 00000186 55                      push rbp
+   301 00000187 4889E5                  mov rbp, rsp
+   302 0000018A 53                      push rbx
+   303 0000018B 4154                    push r12
+   304 0000018D 4155                    push r13
+   305 0000018F 4889FB                  mov rbx, rdi
+   306 00000192 4989F4                  mov r12, rsi
+   307 00000195 4989D5                  mov r13, rdx
+   308 00000198 49C7C200000000          mov r10, 0
+   309                                 
+   310                                  caesarLoop:
+   311 0000019F 418A0424                mov al, byte [r12]
+   312 000001A3 4400E8                  add al, r13b
+   313 000001A6 41880424                mov byte [r12], al
+   314 000001AA 4983C401                add r12, 1
+   315 000001AE 49FFC2                  inc r10
+   316 000001B1 4939DA                  cmp r10, rbx
+   317 000001B4 7CE7                    jl caesarLoop
+   318                                  caesarReturn:
+   319 000001B6 415D                    pop r13
+   320 000001B8 415C                    pop r12
+   321 000001BA 5B                      pop rbx
+   322 000001BB 5D                      pop rbp
+   323 000001BC C3                      ret
+   324                                 
+   325                                 
+   326                                 
+   327                                 
+   328                                 
+   329                                 reverseChars:
+   330                                 
+   331                                 
+   332                                 
+   333                                 
+   334                                 
+   335                                 
+   336                                 
+   337 000001BD 55                      push rbp
+   338 000001BE 4889E5                  mov rbp, rsp
+   339 000001C1 53                      push rbx
+   340 000001C2 4155                    push r13
+   341 000001C4 4156                    push r14
+   342                                 
+   343 000001C6 4889FB                  mov rbx, rdi
+   344 000001C9 4989F5                  mov r13, rsi
+   345 000001CC 4D89EE                  mov r14, r13
+   346 000001CF 4901DE                  add r14, rbx
+   347 000001D2 4983EE01                sub r14, 1
+   348                                 
+   349                                 
+   350                                  reverseCharsLoop:
+   351 000001D6 418A4500                mov al, byte [r13]
+   352 000001DA 418A1E                  mov bl, byte [r14]
+   353 000001DD 41885D00                mov byte [r13], bl
+   354 000001E1 418806                  mov byte [r14], al
+   355                                 
+   356 000001E4 4983C501                add r13, 1
+   357 000001E8 4983EE01                sub r14, 1
+   358 000001EC 4D39F5                  cmp r13, r14
+   359 000001EF 7CE3                    jl reverseCharsLoop
+   360 000001F1 415E                    pop r14
+   361 000001F3 415D                    pop r13
+   362 000001F5 5B                      pop rbx
+   363 000001F6 5D                      pop rbp
+   364 000001F7 C3                      ret

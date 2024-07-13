@@ -1,0 +1,7 @@
+Sum of A tree = 73
+Sum of B tree = 49
+
+Searching for values... [0 = false, 1 = true, -1 = uninitialized]
+Was 10 found? 1
+Was 11 found? 1
+Was 13 found? 0

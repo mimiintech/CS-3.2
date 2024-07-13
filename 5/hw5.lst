@@ -1,0 +1,274 @@
+     1                                 %line 1+1 hw5.asm
+     2                                 
+     3                                 
+     4                                 
+     5                                 
+     6                                 
+     7                                 
+     8                                 
+     9                                 [section .bss]
+    10                                 LENGTH equ 25
+    11                                 
+    12 00000000 <gap>                  perimValues resd LENGTH
+    13 00000064 <gap>                  areaValues resd LENGTH
+    14                                 
+    15                                 [section .data]
+    16 00000000 05000B000A00040006-    lengthsArray dw 5, 11, 10, 4, 6, 8, 19, 10, 3, 6, 4, 5, 10,
+    17 00000000 00080013000A000300-
+    18 00000000 0600040005000A00   
+    19 0000001A 08000300040006000B-     dw 8, 3, 4, 6, 11, 7, 15, 1, 9, 11, 14, 2
+    20 0000001A 0007000F0001000900-
+    21 0000001A 0B000E000200       
+    22                                 
+    23 00000032 030006000400020003-    widthsArray dw 3, 6, 4, 2, 3, 5, 5, 6, 7, 11, 3, 2, 1,
+    24 00000032 000500050006000700-
+    25 00000032 0B00030002000100   
+    26 0000004C 020008000A00090003-     dw 2, 8, 10, 9, 3, 3, 6, 9, 10, 2, 1, 15
+    27 0000004C 000300060009000A00-
+    28 0000004C 020001000F00       
+    29                                 
+    30 00000064 0000                   avgPerim dw 0
+    31 00000066 0000                   avgArea dw 0
+    32                                 
+    33                                 
+    34                                 EXIT_SUCCESS equ 0
+    35                                 SYS_exit equ 60
+    36                                 
+    37                                 [section .text]
+    38                                 [global _start]
+    39                                 [global findAllPerimeters]
+    40                                 [global findAllAreas]
+    41                                 [global findPerim]
+    42                                 [global findArea]
+    43                                 [global findAvgValue]
+    44                                 
+    45                                 _start:
+    46                                 
+    47                                 
+    48                                 
+    49                                 
+    50                                 
+    51 00000000 48C7C7[00000000]       mov rdi, lengthsArray
+    52 00000007 48C7C6[00000000]       mov rsi, widthsArray
+    53 0000000E 48C7C219000000         mov rdx, LENGTH
+    54 00000015 E851000000             call findAllPerimeters
+    55                                 
+    56                                 
+    57                                 
+    58 0000001A 48C7C7[00000000]       mov rdi, lengthsArray
+    59 00000021 48C7C6[00000000]       mov rsi, widthsArray
+    60 00000028 48C7C219000000         mov rdx, LENGTH
+    61 0000002F E87F000000             call findAllAreas
+    62                                 
+    63                                 
+    64                                 
+    65                                 
+    66                                 
+    67                                 
+    68                                 
+    69                                 
+    70                                 
+    71                                 
+    72                                 
+    73                                 
+    74                                 
+    75                                 
+    76 00000034 48C7C7[00000000]       mov rdi, perimValues
+    77 0000003B 66BE1900               mov si, LENGTH
+    78 0000003F E8EF000000             call findAvgValue
+    79 00000044 66890425[00000000]     mov word [avgPerim], ax
+    80                                 
+    81                                 
+    82 0000004C 48C7C7[00000000]       mov rdi, areaValues
+    83 00000053 66BE1900               mov si, LENGTH
+    84 00000057 E8D7000000             call findAvgValue
+    85 0000005C 66890425[00000000]     mov word [avgArea], ax
+    86                                 
+    87                                 
+    88                                 last:
+    89 00000064 B83C000000              mov eax, SYS_exit
+    90 00000069 BF00000000              mov edi, EXIT_SUCCESS
+    91 0000006E 0F05                    syscall
+    92                                 
+    93                                 
+    94                                 
+    95                                 
+    96                                 
+    97                                 
+    98                                 
+    99                                 
+   100                                 findAllPerimeters:
+   101                                 
+   102                                 
+   103 00000070 55                      push rbp
+   104 00000071 4889E5                  mov rbp, rsp
+   105                                 
+   106 00000074 4154                    push r12
+   107 00000076 4155                    push r13
+   108 00000078 4156                    push r14
+   109 0000007A 4157                    push r15
+   110                                 
+   111                                 
+   112 0000007C 4989FE                  mov r14, rdi
+   113 0000007F 4989F7                  mov r15, rsi
+   114                                 
+   115                                 
+   116 00000082 49C7C400000000          mov r12, 0
+   117 00000089 664189D5                mov r13w, dx
+   118                                 
+   119                                 
+   120                                  allPerim:
+   121                                 
+   122 0000008D 66438B3C66              mov di, word[r14 + 2*r12]
+   123 00000092 66438B3467              mov si, word[r15 + 2*r12]
+   124 00000097 E85F000000              call findPerim
+   125                                 
+   126                                 
+   127 0000009C 428904A5[00000000]      mov dword[perimValues + 4*r12], eax
+   128                                 
+   129                                 
+   130 000000A4 6641FFC4                inc r12w
+   131 000000A8 664539EC                cmp r12w, r13w
+   132 000000AC 7CDD                    jl allPerim
+   133                                 
+   134                                 
+   135 000000AE 415F                    pop r15
+   136 000000B0 415E                    pop r14
+   137 000000B2 415D                    pop r13
+   138 000000B4 415C                    pop r12
+   139 000000B6 5D                      pop rbp
+   140 000000B7 C3                      ret
+   141                                 
+   142                                 
+   143                                 
+   144                                 
+   145                                 
+   146                                 
+   147                                 
+   148                                 
+   149                                 
+   150                                 
+   151                                 findAllAreas:
+   152                                 
+   153                                 
+   154                                 
+   155                                 
+   156                                 
+   157                                 
+   158                                 
+   159 000000B8 55                      push rbp
+   160 000000B9 4889E5                  mov rbp, rsp
+   161                                 
+   162                                 
+   163 000000BC 4154                    push r12
+   164 000000BE 4155                    push r13
+   165 000000C0 4156                    push r14
+   166 000000C2 4157                    push r15
+   167                                 
+   168 000000C4 4989FE                  mov r14, rdi
+   169 000000C7 4989F7                  mov r15, rsi
+   170                                 
+   171 000000CA 49C7C400000000          mov r12, 0
+   172 000000D1 664189D5                mov r13w, dx
+   173                                 
+   174                                  allAreas:
+   175                                 
+   176                                 
+   177 000000D5 66438B3C66              mov di, word [r14+ 2*r12]
+   178 000000DA 66438B3467              mov si, word [r15+ 2*r12]
+   179 000000DF E834000000              call findArea
+   180                                 
+   181 000000E4 428904A5[00000000]      mov dword [areaValues+ 4*r12], eax
+   182                                 
+   183 000000EC 6641FFC4                inc r12w
+   184 000000F0 664539EC                cmp r12w, r13w
+   185 000000F4 7CDD                    jl allAreas
+   186                                 
+   187 000000F6 415F                    pop r15
+   188 000000F8 415E                    pop r14
+   189 000000FA 415D                    pop r13
+   190 000000FC 415C                    pop r12
+   191 000000FE 5D                      pop rbp
+   192 000000FF C3                      ret
+   193                                 
+   194                                 
+   195                                 
+   196                                 
+   197                                 
+   198                                 findPerim:
+   199                                 
+   200                                 
+   201                                 
+   202                                 
+   203                                 
+   204                                 
+   205                                 
+   206 00000100 664189FA                mov r10w, di
+   207 00000104 664189F3                mov r11w, si
+   208                                 
+   209                                 
+   210 00000108 664501DA                add r10w, r11w
+   211                                 
+   212 0000010C 66B80200                mov ax, 2
+   213 00000110 6641F7E2                mul r10w
+   214                                 
+   215 00000114 664189C2                mov r10w, ax
+   216                                 
+   217 00000118 410FB7C2                movzx eax, r10w
+   218                                 
+   219 0000011C C3                      ret
+   220                                 
+   221                                 
+   222                                 
+   223                                 
+   224                                 
+   225                                 
+   226                                 
+   227                                 
+   228                                 findArea:
+   229                                 
+   230 0000011D 6689F8                  mov ax, di
+   231 00000120 66F7E6                  mul si
+   232                                 
+   233                                 
+   234                                 
+   235                                 
+   236 00000123 4883EC04                sub rsp, 4
+   237 00000127 66890424                mov word [rsp], ax
+   238 0000012B 6689542402              mov word [rsp + 2], dx
+   239 00000130 8B0424                  mov eax, dword [rsp]
+   240                                 
+   241 00000133 4883C404                add rsp, 4
+   242 00000137 C3                      ret
+   243                                 
+   244                                 
+   245                                 
+   246                                 
+   247                                 
+   248                                 
+   249                                 
+   250                                 
+   251                                 findAvgValue:
+   252                                 
+   253                                 
+   254                                 
+   255                                 
+   256                                 
+   257 00000138 4989FA                  mov r10, rdi
+   258 0000013B 4C0FBFDE                movsx r11, si
+   259                                 
+   260 0000013F 48C7C000000000          mov rax, 0
+   261 00000146 48C7C300000000          mov rbx, 0
+   262                                 
+   263                                  sumLoop:
+   264 0000014D 664103049A              add ax, word [r10 + rbx*4]
+   265 00000152 66FFC3                  inc bx
+   266 00000155 664439DB                cmp bx, r11w
+   267 00000159 7CF0                    jl sumLoop
+   268                                 
+   269                                 
+   270 0000015B 66BA0000                mov dx, 0
+   271 0000015F 6641F7F3                div r11w
+   272 00000163 C3                      ret
+   273                                 
+   274                                 

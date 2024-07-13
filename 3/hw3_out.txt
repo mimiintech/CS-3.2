@@ -1,0 +1,16 @@
+
+------------- First Array -------------
+sum1 = 806
+length1 = 30
+avg1 = 26
+max1 = 83
+------------- Second Array -------------
+sum2 = 428
+length2 = 20
+avg2 = 21
+max2 = 90
+------------- Third Array -------------
+sum3 = 307
+length3 = 11
+avg3 = 27
+max3 = 110

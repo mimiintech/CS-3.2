@@ -1,0 +1,35 @@
+#------------------------------------
+# CS 218
+#   Assignment #3
+#   Debugger Script File
+#------------------------------------
+echo \n\n
+b last
+run
+set pagination off
+set logging file hw3_out.txt
+set logging overwrite
+set logging enable on
+set prompt
+echo \n
+echo ------------- First Array -------------
+echo \n
+printf "sum1 = %i\n", (int)sum1
+printf "length1 = %i\n", (int)length1
+printf "avg1 = %i\n", (int)avg1
+printf "max1 = %i\n", (int)max1
+echo ------------- Second Array -------------
+echo \n
+printf "sum2 = %i\n", (int)sum2
+printf "length2 = %i\n", (int)length2
+printf "avg2 = %i\n", (int)avg2
+printf "max2 = %i\n", (int)max2
+echo ------------- Third Array -------------
+echo \n
+printf "sum3 = %i\n", (int)sum3
+printf "length3 = %i\n", (int)length3
+printf "avg3 = %i\n", (int)avg3
+printf "max3 = %i\n", (int)max3
+set loggin enabled off
+set confirm off
+quit

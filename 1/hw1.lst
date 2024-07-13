@@ -1,0 +1,57 @@
+     1                                 %line 1+1 hw1.asm
+     2                                 
+     3                                 
+     4                                 
+     5                                 
+     6                                 
+     7                                 
+     8                                 
+     9                                 
+    10                                 
+    11                                 [section .data]
+    12                                 
+    13                                 
+    14                                 
+    15 00000000 05                     byteVar1 db 5
+    16 00000001 07                     byteVar2 db 7
+    17 00000002 00                     byteResult db 0
+    18 00000003 0000                   wordPad dw 0
+    19 00000005 1405                   wordVar1 dw 1300
+    20 00000007 FA00                   wordVar2 dw 250
+    21 00000009 0000                   wordResult dw 0
+    22 0000000B 0000                   wordRemainder dw 0
+    23 0000000D DC780000               doubleVar1 dd 30940
+    24 00000011 E8030000               doubleVar2 dd 1000
+    25 00000015 00000000               doubleResult dd 0
+    26 00000019 C731060000000000       quadVar1 dq 405959
+    27 00000021 7C0E000000000000       quadVar2 dq 3708
+    28 00000029 0000000000000000       quadResult dq 0
+    29                                 
+    30                                 
+    31                                 EXIT_SUCCESS equ 0
+    32                                 SYS_exit equ 60
+    33                                 
+    34                                 [section .text]
+    35                                 
+    36                                 
+    37                                 [global _start]
+    38                                 _start:
+    39                                 
+    40                                 
+    41 00000000 8A0425[00000000]       mov al, byte[byteVar1]
+    42 00000007 020425[00000000]       add al, byte[byteVar2]
+    43 0000000E 880425[00000000]       mov byte[byteResult], al
+    44                                 
+    45                                 
+    46 00000015 668B0425[00000000]     mov ax, word[wordVar1]
+    47 0000001D 6699                   cwd
+    48 0000001F 66F73425[00000000]     div word[wordVar2]
+    49 00000027 66890425[00000000]     mov word[wordResult], ax
+    50 0000002F 66891425[00000000]     mov word[wordRemainder], dx
+    51                                 
+    52                                 
+    53                                 last:
+    54 00000037 B83C000000              mov eax, SYS_exit
+    55 0000003C BF00000000              mov edi, EXIT_SUCCESS
+    56 00000041 0F05                    syscall
+    57                                 

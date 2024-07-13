@@ -1,0 +1,15 @@
+Breakpoint 2 at 0x401046: file hw7.asm, line 103.
+[Inferior 1 (process 11422) exited with code 01]
+Checking buffer contents after read 
+$1 = '\000' <repeats 149 times>
+Num     Type           Disp Enb Address            What
+1       breakpoint     keep y   0x000000000040100f hw7.asm:78
+2       breakpoint     keep y   0x0000000000401046 hw7.asm:103
+Breakpoint 3 at 0x40108f: file hw7.asm, line 147.
+a7din.txt:20: Error in sourced command file:
+The program is not being run.
+Num     Type           Disp Enb Address            What
+1       breakpoint     keep y   0x000000000040100f hw7.asm:78
+2       breakpoint     keep y   0x0000000000401046 hw7.asm:103
+3       breakpoint     keep y   0x000000000040108f hw7.asm:147
+No symbol "program" in current context.

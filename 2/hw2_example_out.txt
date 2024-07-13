@@ -1,0 +1,23 @@
+
+byteVar1 = 4
+byteVar2 = 9
+wordVar1 = 1120
+wordVar2 = 410
+doubleVar1 = 29400
+doubleVar2 = 21110
+quadVar1 = 50678
+quadVar2 = 123
+------------- Computations -------------
+byteDif = 5
+wordQuot = 2
+wordRemainder = 300
+wordProd = 36
+doubleProd = 459200
+byteSum = 13
+wordDif = 710
+doubleSum = 50510
+quadQuot = 412
+quadRemainder = 2
+quadSum = 50801
+quadProd = 620634000
+doubleResult = 31640
